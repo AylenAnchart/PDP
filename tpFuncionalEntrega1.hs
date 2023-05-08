@@ -47,9 +47,7 @@ especialidad = tipoDePlanta; --Genere esta funcion para poder utilizar los strin
 
 --Determinar si un zombie es peligroso. Esto ocurre cuando tiene más de un accesorio o su nivel de muerte es mayor a 10
 esPeligroso :: Zombie -> Bool
-esPeligroso zombie  
-| length (accesorios zombie) > 0
-| nivelDeMuerte zombie > 10
+esPeligroso zombie = length (accesorios zombie) > 0 || nivelDeMuerte zombie > 10;
 
 --Punto 3a--
 
@@ -82,9 +80,7 @@ ataqueTotalZombies linea = sum (map Zombie.poderDeMordida (zombies linea)); -- t
 
 --Saber si una línea está en peligro
 estaEnPeligro ::  LineaDeDefensa -> Bool
-estaEnPeligro linea 
-    | ataqueTotalPlantas linea < ataqueTotalZombies linea
-    | all esPeligroso (zombies linea) && not (null(zombies linea)) > 0
+estaEnPeligro linea = ataqueTotalPlantas linea < ataqueTotalZombies linea || all esPeligroso (zombies linea) && not (null(zombies linea)) > 0;
 
 --Punto 3c--
 
