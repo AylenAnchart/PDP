@@ -1,29 +1,29 @@
 --Punto 1a--
-data Planta = PeaShooter | Repeater | Sunflower | Nut | Planta1 | Planta2 deriving (Eq, Show)
+data Planta = PeaShooter | Repeater | Sunflower | Nut | Parhart | Ancdor deriving (Eq, Show)
 
 puntosVida :: Planta -> Int
 puntosVida PeaShooter = 5
 puntosVida Repeater = 5
 puntosVida Sunflower = 7
 puntosVida Nut = 100
-puntosVida Planta1 = 4
-puntosVida Planta2 = 6
+puntosVida Parhart = 4
+puntosVida Ancdor = 6
 
 soles :: Planta -> Int
 soles PeaShooter = 0
 soles Repeater = 0
 soles Sunflower = 1
 soles Nut = 0
-soles Planta1 = 2
-soles Planta2 = 3
+soles Parhart = 2
+soles Ancdor = 3
 
 especiePlanta :: Planta -> String
 especiePlanta PeaShooter = "PeaShooter"
 especiePlanta Repeater = "Repeater"
 especiePlanta Sunflower = "Sunflower"
 especiePlanta Nut = "Nut"
-especiePlanta Planta1 = "PlantaNueva1"
-especiePlanta Planta2 = "PlantaNueva2"
+especiePlanta Parhart = "PlantaNueva1"
+especiePlanta Ancdor= "PlantaNueva2"
 
 poderAtaque :: Planta -> Int
 poderAtaque PeaShooter = 2
@@ -34,11 +34,11 @@ poderAtaque _ = 0  -- Otras plantas no tienen poder de ataque
 data Zombie = ZombieBase | BalloonZombie | NewspaperZombie | Gargantuar | ZombieSinAccesorio deriving (Eq, Show)
 
 nombreZombie :: Zombie -> [Char]
-nombreZombie ZombieBase = "Zombie Base"
-nombreZombie BalloonZombie = "Balloon Zombie"
-nombreZombie NewspaperZombie = "Newspaper Zombie"
-nombreZombie Gargantuar = "Gargantuar Hulk Smash Puny God"
-nombreZombie ZombieSinAccesorio = "Zombie Sin Accesorio"
+nombreZombie ZombieBase = "ZombieBase"
+nombreZombie BalloonZombie = "BalloonZombie"
+nombreZombie NewspaperZombie = "NewspaperZombie"
+nombreZombie Gargantuar = "GargantuarHulkSmashPunyGod"
+nombreZombie ZombieSinAccesorio = "ZombieSinAccesorio"
 
 accesorio :: Zombie -> Maybe String
 accesorio ZombieBase = Nothing
@@ -74,46 +74,45 @@ especialidad planta
 
 --Punto 2b--
 esPeligroso :: Zombie -> Bool
-esPeligroso zombie 
-  | length (nombreZombie zombie) > 10 = True
-  | length (accesorio zombie) > 1 = True
+esPeligroso zombie = length (nombreZombie zombie) > 10 || length (accesorio zombie) > 1
 
 --Punto 3a--
-type LineaDeDefensaP = [Planta]
-type LineaDeDefensaZ = [Zombie]
 
-agregarPlanta :: Planta -> LineaDeDefensaP -> LineaDeDefensaP
-agregarPlanta planta lineaDefensa = lineaDefensa ++ [planta]
+data LineaDeDefensa = LineaDeDefensa{
+    plantas :: [Planta],
+    zombies :: [Zombie]
+} deriving(Show,Eq);
 
-agregarZombie :: Zombie -> LineaDeDefensaZ -> LineaDeDefensaZ
-agregarZombie zombie lineaDeDefensa = lineaDeDefensa ++ [zombie]
+agregarPlanta :: LineaDeDefensa -> Planta -> LineaDeDefensa
+agregarPlanta lineaDeDefensa planta = lineaDeDefensa {plantas = plantas lineaDeDefensa ++ [planta]}
+
+agregarZombie :: LineaDeDefensa -> Zombie -> LineaDeDefensa
+agregarZombie lineaDeDefensa zombie = lineaDeDefensa {zombies = zombies lineaDeDefensa ++ [zombie]}
 
 --Punto 3b--
-totalAtaque :: LineaDeDefensaP -> Int
-totalAtaque [] = 0
+totalAtaque :: [Planta] -> Int
 totalAtaque plantas = foldr ((+) . poderAtaque) 0 plantas
 
-totalMordiscos :: LineaDeDefensaZ -> Int
-totalMordiscos [] = 0
+totalMordiscos :: [Zombie] -> Int
 totalMordiscos zombies = foldr ((+) . danioMordida) 0 zombies
 
-estaEnPeligro :: LineaDeDefensaP -> LineaDeDefensaZ -> Bool
+estaEnPeligro :: [Planta] -> [Zombie] -> Bool
 estaEnPeligro plantas zombies = totalAtaque plantas < totalMordiscos zombies || (all esPeligroso zombies && not (null zombies))
 
 --Punto 3c--
-necesitaSerDefendida :: LineaDeDefensaP -> Bool
-necesitaSerDefendida = all (\ planta -> especialidad planta == "Proveedora")
+necesitaSerDefendida :: LineaDeDefensa -> Bool
+necesitaSerDefendida linea = all (\planta -> especialidad planta == "Proveedora") (plantas linea)
 
 --Punto 4--
-lineaMixta :: LineaDeDefensaP -> Bool
-lineaMixta [] = False 
-lineaMixta [_] = False 
-lineaMixta (p1:p2:ps)= all (/= especialidad p1) (map especialidad (p2:ps))
+lineaMixta :: LineaDeDefensa -> Bool
+lineaMixta [] = False;
+lineaMixta [_] = False;
+lineaMixta (planta1:planta2:ps) = all (/= especialidad planta1) (map especialidad (planta2:ps));
 
 --Punto 5a--
 ataquePlanta :: Planta -> Zombie -> String
 ataquePlanta planta zombie = drop (poderAtaque planta) (nombreZombie zombie)
 
 --Punto 5b--
-ataqueZombie :: Zombie -> Planta -> Int
-ataqueZombie zombie planta = puntosVida planta - danioMordida zombie
+--ataqueZombie :: Zombie -> Planta -> Int
+--ataqueZombie zombie planta = puntosVida planta - danioMordida zombie
