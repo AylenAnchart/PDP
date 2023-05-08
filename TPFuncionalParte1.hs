@@ -62,14 +62,14 @@ especieZombie ZombieSinAccesorio = "Zombie Sin Accesorio"
 especieZombie Gargantuar = "Gargantuar Hulk Smash Puny God"
 
 nivelDeMuerte :: Zombie -> Int
-nivelDeMuerte zomb = length (nombreZombie zomb)
+nivelDeMuerte zombie = length (nombreZombie zombie)
 
 --Punto 2a--
 especialidad :: Planta -> String
-especialidad p
-  | poderAtaque p > puntosVida p = "Atacante"
-  | soles p > 0 = "Proveedora"
-  | poderAtaque p == 0 = "Defensiva"
+especialidad planta
+  | poderAtaque planta > puntosVida planta = "Atacante"
+  | soles planta > 0 = "Proveedora"
+  | poderAtaque planta == 0 = "Defensiva"
   | otherwise = "Desconocida"
 
 --Punto 2b--
@@ -79,9 +79,6 @@ esPeligroso zombie
   | length (accesorio zombie) > 1 = True
 
 --Punto 3a--
-agregarAlFinal :: a -> [a] -> [a]
-agregarAlFinal x xs = xs ++ [x]
-
 type LineaDeDefensaP = [Planta]
 type LineaDeDefensaZ = [Zombie]
 
