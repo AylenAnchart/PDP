@@ -12,6 +12,7 @@ sunflower = Planta "Sunflower" 7 1 0
 nut = Planta "Nut" 100 0 0
 parhart = Planta "Parhart" 3 0 7
 ancdor = Planta "Ancdor" 11 2 1
+cactus = Planta "Cactus" 9 0 0
 
 -- Punto 1b--
 
@@ -31,12 +32,6 @@ nivelDeMuerte = length.especieZombie
 
 --Punto 2a--
 
-tipoDePlanta :: Planta -> String
-tipoDePlanta planta
-    | cantSoles planta > 0 = "Proveedora"
-    | poderDeAtaque planta > cantPuntosVida planta = "Atacante"
-    | otherwise = "Defensiva"
-
 especialidad :: Planta -> String
 especialidad planta
   | poderDeAtaque planta > cantPuntosVida planta = "Atacante"
@@ -46,8 +41,9 @@ especialidad planta
 
 --Punto 2b--
 
+
 esPeligroso :: Zombie -> Bool
-esPeligroso zombie = length (accesorios zombie) > 0 || nivelDeMuerte zombie > 10
+esPeligroso zombie = (not . null . accesorios) zombie || (> 10) (nivelDeMuerte zombie)
 
 --Punto 3a--
 
@@ -64,11 +60,14 @@ agregarZombie lineaDeDefensa zombie = lineaDeDefensa {zombies = zombies lineaDeD
 
 --Punto 3b--
 
+ataqueTotal :: (a -> Int) -> (LineaDeDefensa -> [a]) -> LineaDeDefensa -> Int
+ataqueTotal poderDeAtaqueFunc obtenerElementosFunc linea = sum (map poderDeAtaqueFunc (obtenerElementosFunc linea))
+
 ataqueTotalPlantas :: LineaDeDefensa -> Int
-ataqueTotalPlantas linea = sum (map poderDeAtaque (plantas linea)); 
+ataqueTotalPlantas = ataqueTotal poderDeAtaque plantas
 
 ataqueTotalZombies :: LineaDeDefensa -> Int
-ataqueTotalZombies linea = sum (map poderDeMordida (zombies linea));
+ataqueTotalZombies = ataqueTotal poderDeMordida zombies
 
 estaEnPeligro ::  LineaDeDefensa -> Bool
 estaEnPeligro linea = ataqueTotalPlantas linea < ataqueTotalZombies linea || all esPeligroso (zombies linea) && not (null(zombies linea));
@@ -76,7 +75,7 @@ estaEnPeligro linea = ataqueTotalPlantas linea < ataqueTotalZombies linea || all
 --Punto 3c--
 
 necesitaSerDefendida :: LineaDeDefensa -> Bool
-necesitaSerDefendida linea = all ((== "Proveedora").especialidad) (plantas linea) 
+necesitaSerDefendida = all ((== "Proveedora") . especialidad) . plantas
 
 --Punto 4--
 
@@ -111,3 +110,4 @@ linea3 = LineaDeDefensa {
     plantas = [peaShooter, parhart, ancdor],
     zombies = []
 }
+
