@@ -87,7 +87,9 @@ lineaMixta (LineaDeDefensa (p1:p2:ps) _) = all (/= especialidad p1) (map especia
 --Punto 5a--
 
 ataquePlantaAZombie :: Planta -> Zombie -> Zombie
-ataquePlantaAZombie  planta zombie = zombie {especieZombie =  drop (poderDeAtaque planta) (especieZombie zombie)}
+ataquePlantaAZombie planta zombie
+  | especiePlanta planta == "Cactus" && "Globo" `elem` accesorios zombie = zombie { especieZombie = drop (poderDeAtaque planta) (especieZombie zombie), accesorios = filter (/= "Globo") (accesorios zombie) }
+  | otherwise = zombie { especieZombie = drop (poderDeAtaque planta) (especieZombie zombie) }
 -- drop: primera n cant de elementos, los saca.
 
 --Punto 5b--
@@ -110,4 +112,41 @@ linea3 = LineaDeDefensa {
     plantas = [peaShooter, parhart, ancdor],
     zombies = []
 }
+
+-- Punto 3 Parte 2 
+
+jardin :: [LineaDeDefensa]
+jardin = [linea1, linea2, linea3]
+
+type Horda = [(Zombie, LineaDeDefensa)]
+
+agregarHorda :: Horda -> [LineaDeDefensa] -> [LineaDeDefensa]
+agregarHorda horda jardin = map (\(zombie, linea) -> agregarZombie linea zombie) horda
+
+
+-- Prueba 
+
+hordaEjemplo :: Horda
+hordaEjemplo = [(zombieBase, linea1), (balloonZombie, linea2), (newspaperZombie, linea3)]
+
+nuevoJardin :: [LineaDeDefensa]
+nuevoJardin = agregarHorda hordaEjemplo jardin
+
+--Punto 4 Parte 2
+
+rondaDeAtaque :: Planta -> Zombie -> (Planta, Zombie)
+rondaDeAtaque planta zombie = (ataqueZombieAPlanta zombie planta, ataquePlantaAZombie planta zombie)
+
+--Punto 5 Parte 2 
+
+plantaMurio :: Planta -> Bool
+plantaMurio planta = cantPuntosVida planta <= 0
+
+zombieMurio :: Zombie -> Bool
+zombieMurio zombie = nivelDeMuerte zombie <= 0
+
+--Punto 6 Parte 2
+
+fuegoCruzado :: Planta -> Zombie -> (Bool, Bool)
+fuegoCruzado planta zombie = (plantaMurio (fst (rondaDeAtaque planta zombie)), zombieMurio (snd (rondaDeAtaque planta zombie)))
 
