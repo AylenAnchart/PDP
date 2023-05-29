@@ -114,30 +114,22 @@ linea3 = LineaDeDefensa {
 }
 
 {- Punto 1 parte 2
-
 i. Si hubiera una cantidad infinita de zombies bases en la misma línea y consultamos si la línea está 
 en peligro utilizando la función estaEnPeligro, la evaluación de la función no finalizaría. Esto se debe a 
 que la función ataqueTotalPlantas intentaría calcular la suma de los ataques de todas las plantas en la línea, 
 mientras que la función ataqueTotalZombies intentaría calcular la suma de los ataques de una cantidad infinita 
 de zombies bases. En ambos casos, no se puede completar la suma en una lista infinita, lo que resultaría en una 
 evaluación que no finaliza.
-
-ii. Si consultamos si una línea con una cantidad infinita de PeaShooters necesita ser defendida utilizando la función necesitaSerDefendida, 
+ii. Si consultamos si una línea con una cantidad infinita de Sunflowers necesita ser defendida utilizando la función necesitaSerDefendida, 
 la evaluación de la función no finalizaría. Esto se debe a que la función "all ((== "Proveedora") . especialidad) . plantas" intentaría 
-verificar si todos los elementos de la lista de plantas tienen la especialidad "Proveedora". En el caso de una cantidad infinita de PeaShooters,
-la verificación nunca se completaría, ya que se intentaría verificar la especialidad de una cantidad infinita de plantas.
-
-Por otro lado, si consultamos si una línea con una cantidad infinita de Sunflowers necesita ser defendida utilizando la misma función 
-necesitaSerDefendida, la evaluación de la función se completaría y devolvería True. Esto se debe a que en la función 
-"all ((== "Proveedora") . especialidad) . plantas", la especialidad de todas las plantas se compara con "Proveedora". Dado que la especialidad 
-de los Sunflowers es "Proveedora", y se tienen una cantidad infinita de ellos, la verificación para cada planta en la lista se cumpliría y 
-la función devolvería True.
-
-iii. En el primer caso, el cálculo de las sumas en una lista infinita de zombies bases nunca se completaría.
-En el segundo caso, la verificación de la especialidad en una lista infinita de PeaShooters tampoco se completaría. Sin embargo, en el caso
-de una lista infinita de Sunflowers, dado que la verificación se cumple para cada elemento, la función devolvería True debido a la naturaleza
-infinita de los Sunflowers en la lista.
-
+verificar si todos los elementos de la lista de plantas tienen la especialidad "Proveedora" ya que se intentaría verificar la especialidad
+de una cantidad infinita de plantas.
+Por otro lado, si consultamos si una línea con una cantidad infinita de PeaShooters con la misma función necesitaSerDefendida, la evaluación
+de la función se completaría y devolvería False.
+iii. En el primer caso, el cálculo de las sumas en una lista infinita de zombies bases nunca se completaría porque no puede corroborar todos los casos.
+En el segundo caso, la verificación de la especialidad en una lista infinita de Sunflowers tampoco se completaría porque no puede corroborar todos los casos.
+Sin embargo, en el caso de una lista infinita de PeaShooters,la verificación se cumple devolviendo False en el primer elemento ya que la función solo devuelve
+True en caso de que TODAS las plantas de la lines sean del tipo "Proveedora" => "all ((== "Proveedora") . especialidad) . plantas"
 -}
 -- Punto 3 Parte 2 
 
